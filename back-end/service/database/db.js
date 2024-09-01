@@ -1,22 +1,14 @@
-// Initialise the database connection
-const { Sequelize } = require("sequelize");
-
-const sequelize = new Sequelize({
-    dialect: "sqlite",
-    storage: "./service/database/db.sqlite",
-    logging: false,
+document.getElementById("delete-user-form").addEventListener("submit", async (event) => {
+	event.preventDefault();
+	const username = document.getElementById("other-username").value;
+	const response = await fetch(`http://localhost:4001/auth/delete/user`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			username
+		})
+	});
+		
 });
-
-sequelize.authenticate().then(async () => {
-  await sequelize.sync({alter:true}).then(() => {
-    console.log("Database synchronized");
-  })
-  console.log("Connection has been established successfully");
-})
-  .catch((err) => {
-    console.error("Unable to connect to the database:", err);
-  });
-
-module.exports = {
-  sequelize,
-};
