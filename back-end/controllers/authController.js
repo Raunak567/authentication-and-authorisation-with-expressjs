@@ -174,11 +174,13 @@ const delete_user_by_username = async (req, res) => {
 
         console.log("username", username);
 
-        if(!username) return res.status(400).json({ message: "Invalid Request" });
+        if (!username) {
+            return res.status(400).json({ message: "Invalid Request", ok: false, })
+        }
 
         let user = await UserModel.findOne({ where: { username: username } });
 
-        if (!user) {
+        if (!username) {
             return res.status(404).json({ message: "User not found", ok: false });
         }
 
@@ -189,8 +191,8 @@ const delete_user_by_username = async (req, res) => {
             }
         })
 
-        // Clear the cookie
-        res.clearCookie("user");
+    // Clear the cookie
+    res.clearCookie("username");
 
         return res.status(200).json({ message: "User Deleted Successfully", ok: true });
     } catch (error) {
