@@ -170,15 +170,13 @@ const update_user_profile = async (req, res) => {
 
 const delete_user_by_username = async (req, res) => {
     try {
-        // Get the user ID from the JWT token
-        let user_id = await get_user_id(req);
+        let { username } = req.body;
 
-        if (!user_id) {
-            return res.status(400).json({ message: "User ID not provided", ok: false });
-        }
+        console.log("username", username);
 
-        // Find the user by ID
-        let user = await UserModel.findOne({ where: { id: user_id } });
+        if(!username) return res.status(400).json({ message: "Invalid Request" });
+
+        let user = await UserModel.findOne({ where: { username: username } });
 
         if (!user) {
             return res.status(404).json({ message: "User not found", ok: false });
