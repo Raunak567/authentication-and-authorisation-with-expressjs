@@ -54,6 +54,7 @@ const login = async (req, res) => {
     }
 }
 
+
 const logout = async (req, res) => {
     try {
         res.clearCookie("user")
@@ -167,10 +168,44 @@ const update_user_profile = async (req, res) => {
     }
 }
 
+const delete_user_by_username = async (req, res) => {
+    try {
+        // Get the user ID from the JWT token
+        let user_id = await get_user_id(req);
+
+        if (!user_id) {
+            return res.status(400).json({ message: "User ID not provided", ok: false });
+        }
+
+        // Find the user by ID
+        let user = await UserModel.findOne({ where: { id: user_id } });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found", ok: false });
+        }
+
+        // Delete the user
+        await UserModel.destroy({
+            where: {
+                username: username
+            }
+        })
+
+        // Clear the cookie
+        res.clearCookie("user");
+
+        return res.status(200).json({ message: "User Deleted Successfully", ok: true });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        return res.status(500).json({ message: "Server Error", ok: false });
+    }
+}
+
 module.exports = {
     login,
     logout,
     register,
     load_user_profile,
-    update_user_profile
+    update_user_profile,
+    delete_user_by_username
 }
